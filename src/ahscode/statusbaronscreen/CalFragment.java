@@ -1,14 +1,18 @@
 package ahscode.statusbaronscreen;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -130,6 +134,8 @@ public class CalFragment extends Fragment {
 				item.mTitle = sb.append("ステータスバーの長さをDPに変換：").toString();sb.setLength(0);
 				item.mValue = sb.append(dp).append("dp") .toString();sb.setLength(0);
 				list.add(item);
+				//Device全体の幅と高さ
+				getsize();
 				//グリッドレイアウトにつっこむ
 				mGridLayout.setColumnCount(2);
 				mGridLayout.setRowCount(list.size());
@@ -151,6 +157,43 @@ public class CalFragment extends Fragment {
 					tx.setTextColor(text_color);
 					mGridLayout.addView(tx);
 				}
+			}
+
+			@SuppressLint("NewApi")
+			private void getsize() {
+				@SuppressWarnings("unused")
+				final String method_tag = mTAG+"/getsize";
+				int width = 0, height = 0;
+				final DisplayMetrics metrics = new DisplayMetrics();
+				Display display = getActivity().getWindowManager().getDefaultDisplay();
+				Method mGetRawH = null, mGetRawW = null;
+
+				try {
+					// For JellyBean 4.2 (API 17) and onward
+					if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+						display.getRealMetrics(metrics);
+
+						width = metrics.widthPixels;
+						height = metrics.heightPixels;
+					} else {
+						mGetRawH = Display.class.getMethod("getRawHeight");
+						mGetRawW = Display.class.getMethod("getRawWidth");
+
+						try {
+							width = (Integer) mGetRawW.invoke(display);
+							height = (Integer) mGetRawH.invoke(display);
+						} catch (IllegalArgumentException e) {
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							e.printStackTrace();
+						} catch (InvocationTargetException e) {
+							e.printStackTrace();
+						}
+					}
+				} catch (NoSuchMethodException e3) {  
+					e3.printStackTrace();
+				}
+				Log.d(method_tag, "width/height?"+width+"/"+height);
 			}
 
 			private String getDpiName(float densityDpi) {
@@ -176,11 +219,11 @@ public class CalFragment extends Fragment {
 		};
 	}
 	public int getStatusBarPxHeightFromResouce() {
-	      int result = 0;
-	      int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-	      if (resourceId > 0) {
-	          result = getResources().getDimensionPixelSize(resourceId);
-	      }
-	      return result;
+		int result = 0;
+		int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+		if (resourceId > 0) {
+			result = getResources().getDimensionPixelSize(resourceId);
+		}
+		return result;
 	}
 }
