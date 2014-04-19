@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -134,8 +133,9 @@ public class CalFragment extends Fragment {
 				item.mTitle = sb.append("ステータスバーの長さをDPに変換：").toString();sb.setLength(0);
 				item.mValue = sb.append(dp).append("dp") .toString();sb.setLength(0);
 				list.add(item);
-				//Device全体の幅と高さ
-				getsize();
+				//全体の幅と高さ
+				//no use getDeviceSize() 2014/04/19
+//				getDeviceSize();
 				//グリッドレイアウトにつっこむ
 				mGridLayout.setColumnCount(2);
 				mGridLayout.setRowCount(list.size());
@@ -160,9 +160,9 @@ public class CalFragment extends Fragment {
 			}
 
 			@SuppressLint("NewApi")
-			private void getsize() {
+			private void getDeviceSize() {
 				@SuppressWarnings("unused")
-				final String method_tag = mTAG+"/getsize";
+				final String method_tag = mTAG+"/getDeviceSize";
 				int width = 0, height = 0;
 				final DisplayMetrics metrics = new DisplayMetrics();
 				Display display = getActivity().getWindowManager().getDefaultDisplay();
@@ -172,7 +172,6 @@ public class CalFragment extends Fragment {
 					// For JellyBean 4.2 (API 17) and onward
 					if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
 						display.getRealMetrics(metrics);
-
 						width = metrics.widthPixels;
 						height = metrics.heightPixels;
 					} else {
@@ -193,7 +192,7 @@ public class CalFragment extends Fragment {
 				} catch (NoSuchMethodException e3) {  
 					e3.printStackTrace();
 				}
-				Log.d(method_tag, "width/height?"+width+"/"+height);
+//				Log.d("device_all_size.", "width/height?"+width+"/"+height);
 			}
 
 			private String getDpiName(float densityDpi) {
