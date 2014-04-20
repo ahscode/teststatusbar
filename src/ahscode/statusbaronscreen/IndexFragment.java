@@ -69,7 +69,7 @@ public class IndexFragment extends ListFragment {
 		list.add(item);
 		item = new IndexParam();
 		item.id_style = android.R.style.Theme_Holo_Light_NoActionBar;
-		item.name_style = "like_transactDecor";
+		item.name_style = "like_TranslucentDecor";
 		item.window_option =  new int[]{
 				WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
 				,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS};
